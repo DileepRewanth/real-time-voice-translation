@@ -38,7 +38,7 @@ function App() {
   const flushTimerRef = useRef<number | null>(null);
 
   // WebSocket connection
-  const { isConnected, sendTranslation, lastResult, lastStatus, lastError } = useWebSocket();
+  const { isConnected, sendTranslation, lastResult, lastStatus, lastError, clearLastResult } = useWebSocket();
 
   // TTS
   const { speak, stop: stopTTS, isSpeaking } = useTTS();
@@ -97,11 +97,14 @@ function App() {
     if (isListening) {
       stopListening();
       stopVisualizer();
+      stopTTS();
       setAppState('idle');
       // Flush any remaining text
       const flushed = accumulator.flush();
       if (flushed) handleTranslate(flushed);
     } else {
+      stopTTS();
+      clearLastResult();
       startListening();
       resetTranscript();
       accumulator.reset();
@@ -116,7 +119,7 @@ function App() {
         post_process: 'idle',
       });
     }
-  }, [isListening, startListening, stopListening, startVisualizer, stopVisualizer, handleTranslate, resetTranscript]);
+  }, [isListening, startListening, stopListening, startVisualizer, stopVisualizer, handleTranslate, resetTranscript, stopTTS, clearLastResult]);
 
   // Handle WebSocket status updates
   useEffect(() => {
@@ -165,10 +168,9 @@ function App() {
     if (settings.autoSpeak) {
       setAppState('speaking');
       speak(lastResult.translated_text);
-    } else {
-      setAppState(isListening ? 'listening' : 'idle');
     }
-  }, [lastResult, settings.autoSpeak, speak, isListening]);
+    // If autoSpeak is false, we don't change appState (it remains 'listening')
+  }, [lastResult, settings.autoSpeak, speak]);
 
   // Reset to listening state after TTS finishes
   useEffect(() => {

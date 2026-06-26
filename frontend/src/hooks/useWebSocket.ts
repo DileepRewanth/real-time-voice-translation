@@ -9,6 +9,7 @@ interface UseWebSocketReturn {
   lastStatus: WSStatusPayload | null;
   lastError: string | null;
   reconnect: () => void;
+  clearLastResult: () => void;
 }
 
 export function useWebSocket(): UseWebSocketReturn {
@@ -140,6 +141,11 @@ export function useWebSocket(): UseWebSocketReturn {
     setLastError(null);
   }, []);
 
+  const clearLastResult = useCallback(() => {
+    setLastResult(null);
+    setLastStatus(null);
+  }, []);
+
   return {
     isConnected,
     sendTranslation,
@@ -147,5 +153,6 @@ export function useWebSocket(): UseWebSocketReturn {
     lastStatus,
     lastError,
     reconnect,
+    clearLastResult,
   };
 }
