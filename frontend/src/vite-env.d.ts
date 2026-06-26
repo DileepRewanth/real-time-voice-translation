@@ -1,3 +1,4 @@
+/// <reference types="vite/client" />
 /// <reference lib="dom" />
 
 interface SpeechRecognition extends EventTarget {

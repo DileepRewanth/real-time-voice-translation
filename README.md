@@ -162,7 +162,7 @@ Response:
 |-----------|----------|
 | Strong accents / fast speech | Web Speech API with interim results + sentence accumulation |
 | Named entities mistranslated | Pre-processor marks entities; Gemini preserves them |
-| Partial streaming inputs | Sentence accumulator with 3s flush timeout |
+| Partial streaming inputs | Sentence accumulator with 600ms flush timeout |
 | Fillers ("uh", "you know") | Regex-based removal before translation |
 | Latency buildup | Redis cache, connection pooling, concurrent pipeline stages |
 | Formal vs casual Hindi | User-configurable tone (formal/casual/auto) |
