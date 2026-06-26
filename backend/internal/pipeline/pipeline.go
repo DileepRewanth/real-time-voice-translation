@@ -218,6 +218,10 @@ func (p *Pipeline) postProcess(text string) string {
 		}
 	}
 
+	// Fix the TTS stuttering issue for exact times (e.g., "5:00 बजे" -> "5 बजे")
+	timePattern := regexp.MustCompile(`:00\s*बजे`)
+	text = timePattern.ReplaceAllString(text, " बजे")
+
 	// Trim any accidental whitespace or quotes
 	text = strings.TrimSpace(text)
 	text = strings.Trim(text, "\"'")
